@@ -1,0 +1,625 @@
+/* =========================
+   THEME VARIABLES (DARK)
+   ========================= */
+
+/* :root means the HTML root element.
+   Here I define CSS variables so I can reuse colors everywhere easily. */
+:root{
+  --bg1:#060a14;                 /* main background color (top) for dark mode */
+  --bg2:#0b1630;                 /* main background color (bottom) for dark mode */
+  --card: rgba(255,255,255,.06); /* card background (transparent glass look) */
+  --cardBorder: rgba(255,255,255,.14); /* border color for cards */
+  --text: rgba(255,255,255,.92); /* main text color in dark mode */
+  --muted: rgba(255,255,255,.68);/* muted/secondary text color */
+  --shadow: 0 18px 50px rgba(0,0,0,.45); /* common shadow used for depth */
+  --radius: 18px;                /* common rounded corners for premium look */
+  --soft: rgba(0,0,0,.16);        /* soft inner background for boxes */
+  --softBorder: rgba(255,255,255,.10); /* border for inner boxes */
+}
+
+/* ✅ Light theme
+   When React sets <html data-theme="light">,
+   this block overrides the variables above for light mode. */
+:root[data-theme="light"]{
+  --bg1:#f6f7fb;                 /* light background color (top) */
+  --bg2:#e9eefc;                 /* light background color (bottom) */
+  --card: rgba(255,255,255,.72); /* card looks more solid in light mode */
+  --cardBorder: rgba(15,23,42,.12); /* border becomes dark-ish in light mode */
+  --text: rgba(15,23,42,.92);    /* main text becomes dark */
+  --muted: rgba(15,23,42,.62);   /* muted text becomes grey/dark */
+  --shadow: 0 18px 50px rgba(2,6,23,.12); /* lighter shadow */
+  --soft: rgba(2,6,23,.05);      /* lighter soft background */
+  --softBorder: rgba(15,23,42,.10); /* border in light mode */
+}
+
+/* Apply border-box so padding/border don't break width calculations */
+*{ box-sizing: border-box; }
+
+/* =========================
+   PAGE BASE STYLING
+   ========================= */
+
+body{
+  margin:0; /* remove default browser margin */
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; /* clean modern fonts */
+  color: var(--text); /* use theme text color */
+  
+  /* Premium background:
+     2 radial gradients for glow + 1 linear gradient for base background */
+  background: radial-gradient(1200px 800px at 20% 10%, rgba(22,42,101,.55) 0%, transparent 50%),
+              radial-gradient(1000px 700px at 80% 30%, rgba(107,33,168,.45) 0%, transparent 55%),
+              linear-gradient(180deg, var(--bg1), var(--bg2));
+  
+  min-height: 100vh; /* make background cover full screen height */
+  transition: background .25s ease, color .25s ease; /* smooth switch when theme changes */
+}
+
+/* Main app wrapper */
+.app{
+  position: relative;  /* allow absolute background glows inside */
+  min-height: 100vh;   /* ensure full height */
+  padding: 22px;       /* space around content */
+  overflow: hidden;    /* hide extra glow overflow outside screen */
+}
+
+/* =========================
+   BACKGROUND GLOW BLOBS
+   ========================= */
+
+.bgGlow{
+  position:absolute;      /* placed behind content */
+  width: 520px;           /* size of glow blob */
+  height: 520px;          /* size of glow blob */
+  filter: blur(55px);     /* blur to create glow effect */
+  opacity: .35;           /* make glow subtle */
+  border-radius: 999px;   /* perfect circle */
+  pointer-events:none;    /* glow should not block clicks */
+  transform: translateZ(0);/* improves rendering smoothness */
+}
+
+/* First glow blob position + color */
+.bgGlow1{
+  left:-140px; top:-160px; /* place at top-left outside view */
+  background: radial-gradient(circle at 30% 30%, #3b82f6, transparent 60%); /* blue glow */
+}
+
+/* Second glow blob position + color */
+.bgGlow2{
+  right:-180px; bottom:-200px; /* place at bottom-right outside view */
+  background: radial-gradient(circle at 40% 40%, #a855f7, transparent 62%); /* purple glow */
+}
+
+/* =========================
+   MAIN CONTENT WRAPPER
+   ========================= */
+
+.wrap{
+  width: min(980px, 100%); /* responsive max width */
+  margin: 0 auto;          /* center content */
+  display:flex;            /* flex layout */
+  flex-direction: column;  /* stack sections vertically */
+  gap: 14px;               /* spacing between sections */
+  position: relative;      /* so it stays above glows */
+  z-index: 1;              /* make sure content is on top */
+}
+
+/* Top header bar */
+.topbar{
+  display:flex;                /* place brand + right section in one row */
+  align-items:center;          /* align vertically */
+  justify-content: space-between; /* push left and right apart */
+  gap: 14px;                   /* spacing */
+  flex-wrap: wrap;             /* wrap on smaller screens */
+}
+
+/* Brand section: icon + title */
+.brand{
+  display:flex;         /* row layout */
+  align-items:center;   /* vertical align */
+  gap: 12px;            /* spacing between logo and text */
+}
+
+/* Logo box */
+.logo{
+  width: 44px;                          /* logo size */
+  height: 44px;                         /* logo size */
+  display:grid;                         /* easy center */
+  place-items:center;                   /* center content */
+  border-radius: 14px;                  /* rounded corners */
+  background: rgba(255,255,255,.08);    /* glass background */
+  border: 1px solid rgba(255,255,255,.18); /* subtle border */
+  box-shadow: var(--shadow);            /* premium shadow */
+}
+
+/* Main heading */
+h1{
+  margin:0;              /* remove default margin */
+  font-size: 26px;       /* title size */
+  letter-spacing: .2px;  /* slight spacing for premium typography */
+}
+
+/* Subtitle text */
+.sub{
+  margin: 4px 0 0;       /* small space from title */
+  color: var(--muted);   /* muted color */
+  font-size: 13px;       /* small subtitle */
+}
+
+/* Right section in header: theme button + liked pill */
+.topRight{
+  display:flex;         /* row layout */
+  align-items:center;   /* vertical alignment */
+  gap: 10px;            /* spacing */
+}
+
+/* =========================
+   LIKED COUNT PILL
+   ========================= */
+
+.pill{
+  display:flex;                        /* label + value in row */
+  align-items:center;                  /* align center */
+  gap: 10px;                           /* spacing between label and value */
+  padding: 10px 12px;                  /* inside padding */
+  border-radius: 999px;                /* pill shape */
+  background: rgba(255,255,255,.08);   /* glass effect */
+  border: 1px solid rgba(255,255,255,.18); /* border */
+  backdrop-filter: blur(10px);         /* blur behind (glassmorphism) */
+}
+
+/* Smaller text inside pill */
+.pillLabel{ color: var(--muted); font-size: 12px; } /* label styling */
+
+/* Bold number inside pill */
+.pillValue{ font-weight: 800; font-size: 15px; }    /* value styling */
+
+/* =========================
+   CARD STYLING
+   ========================= */
+
+.card{
+  background: var(--card);            /* themed card background */
+  border: 1px solid var(--cardBorder);/* themed border */
+  border-radius: var(--radius);       /* rounded corners */
+  padding: 16px;                      /* inner spacing */
+  box-shadow: var(--shadow);          /* depth shadow */
+  backdrop-filter: blur(14px);        /* premium glass look */
+}
+
+/* Card header row (title + status) */
+.cardHead{
+  display:flex;                 /* place items in row */
+  align-items:center;           /* align vertically */
+  justify-content: space-between; /* spread apart */
+  gap: 10px;                    /* spacing */
+  margin-bottom: 10px;          /* space below header */
+}
+
+/* Card section title */
+.cardHead h2{
+  margin:0;               /* remove default margin */
+  font-size: 16px;        /* medium title size */
+  letter-spacing: .2px;   /* premium typography */
+}
+
+/* =========================
+   STATUS BADGE
+   ========================= */
+
+.status{
+  font-size: 12px;                          /* small text */
+  padding: 6px 10px;                        /* badge padding */
+  border-radius: 999px;                     /* rounded pill */
+  border: 1px solid rgba(255,255,255,.14);  /* border */
+  color: var(--muted);                      /* muted text */
+}
+
+/* When fetching quote -> blue background */
+.statusLoading{
+  background: rgba(59,130,246,.12);
+}
+
+/* When ready -> green background */
+.statusReady{
+  background: rgba(16,185,129,.12);
+}
+
+/* =========================
+   QUOTE BOX
+   ========================= */
+
+.quoteBox{
+  border-radius: 14px;              /* rounded corners */
+  padding: 14px;                    /* padding inside */
+  background: var(--soft);          /* softer background */
+  border: 1px solid var(--softBorder); /* border */
+  min-height: 160px;                /* fixed minimum height so layout doesn't jump */
+}
+
+/* Main quote text */
+.quoteText{
+  margin:0;               /* remove margin */
+  font-size: 20px;        /* readable size */
+  line-height: 1.5;       /* spacing between lines */
+  letter-spacing: .1px;   /* slight premium spacing */
+}
+
+/* Author line */
+.quoteAuthor{
+  margin: 10px 0 0;       /* space from quote */
+  color: var(--muted);    /* muted look */
+}
+
+/* =========================
+   BUTTON ROW
+   ========================= */
+
+.actions{
+  display:flex;         /* row for buttons */
+  gap: 10px;            /* spacing */
+  margin-top: 14px;     /* space above buttons */
+  flex-wrap: wrap;      /* wrap buttons on small screens */
+}
+
+/* Base button style used everywhere */
+.btn{
+  border: 1px solid rgba(255,255,255,.18); /* button border */
+  background: rgba(255,255,255,.08);       /* default glass background */
+  color: var(--text);                       /* themed text color */
+  padding: 10px 14px;                       /* size */
+  border-radius: 12px;                      /* rounded */
+  cursor: pointer;                          /* hand cursor */
+  font-weight: 700;                         /* bold text */
+  
+  /* smooth hover animations */
+  transition: transform .12s ease, box-shadow .12s ease, background .12s ease, opacity .12s ease;
+}
+
+/* Hover lift effect */
+.btn:hover{
+  transform: translateY(-1px);              /* slight lift */
+  box-shadow: 0 10px 25px rgba(0,0,0,.35);  /* shadow on hover */
+}
+
+/* Disabled state */
+.btn:disabled{
+  opacity: .55;         /* faded */
+  cursor: not-allowed;  /* blocked cursor */
+  transform: none;      /* no hover lift */
+  box-shadow: none;     /* no hover shadow */
+}
+
+/* Theme button extra padding */
+.themeBtn{ padding: 10px 12px; }
+
+/* Primary action button (New Quote / Try Again) */
+.btnPrimary{
+  background: linear-gradient(135deg, rgba(59,130,246,.95), rgba(99,102,241,.95)); /* blue gradient */
+  border-color: rgba(255,255,255,.12); /* slight border */
+}
+
+/* Success button (Liked state) */
+.btnSuccess{
+  background: linear-gradient(135deg, rgba(16,185,129,.95), rgba(34,197,94,.95)); /* green gradient */
+  border-color: rgba(255,255,255,.12);
+}
+
+/* Ghost button (sub actions) */
+.btnGhost{
+  background: rgba(255,255,255,.06); /* more subtle */
+}
+
+/* =========================
+   ERROR ALERT BOX
+   ========================= */
+
+.alert{
+  display:flex;                     /* row */
+  justify-content: space-between;   /* content left, button right */
+  align-items:center;               /* align */
+  gap: 12px;                        /* spacing */
+  padding: 12px;                    /* inner padding */
+  border-radius: 14px;              /* rounded */
+  border: 1px solid rgba(239,68,68,.35); /* red border */
+  background: rgba(239,68,68,.10);       /* red background */
+  margin-bottom: 10px;              /* spacing below */
+}
+
+/* Alert title style */
+.alertTitle{ margin:0; font-weight: 900; }
+
+/* Alert message style */
+.alertText{ margin: 4px 0 0; color: var(--muted); }
+
+/* =========================
+   EMPTY STATE TEXT
+   ========================= */
+
+.empty{ padding: 8px 2px; }          /* spacing */
+.emptyTitle{ margin: 0; font-weight: 900; } /* bold title */
+.emptyText{ margin: 6px 0 0; color: var(--muted); } /* muted description */
+
+/* =========================
+   LIKED QUOTES LIST
+   ========================= */
+
+.list{
+  list-style:none;            /* remove bullets */
+  padding:0;                  /* remove default padding */
+  margin:0;                   /* remove default margin */
+  display:flex;               /* flex layout */
+  flex-direction: column;     /* vertical list */
+  gap: 10px;                  /* spacing between items */
+}
+
+/* Each liked quote row */
+.listItem{
+  display:flex;                       /* row */
+  justify-content: space-between;     /* text left, remove button right */
+  align-items:flex-start;             /* align at top */
+  gap: 10px;                          /* spacing */
+  padding: 12px;                      /* padding */
+  border-radius: 14px;                /* rounded */
+  background: var(--soft);            /* soft background */
+  border: 1px solid var(--softBorder);/* border */
+}
+
+/* Make text take remaining space */
+.listText{ flex: 1; }
+
+/* Quote text in list */
+.listQuote{ font-size: 14px; line-height: 1.45; }
+
+/* Author in list */
+.listAuthor{ margin-top: 6px; color: var(--muted); font-size: 12px; }
+
+/* Footer line */
+.footer{
+  text-align:center;         /* center text */
+  color: var(--muted);       /* muted */
+  font-size: 12px;           /* small */
+  padding: 8px 0;            /* spacing */
+}
+
+/* =========================
+   QUOTE ANIMATION
+   ========================= */
+
+/* Apply fade + slide animation whenever quote block appears */
+.quoteAnim{
+  animation: quoteIn .35s ease both; /* name=quoteIn, duration=0.35s */
+}
+
+/* While loading, reduce opacity */
+.quoteDim{
+  opacity: .6;
+}
+
+/* Keyframes define the animation steps */
+@keyframes quoteIn{
+  from { opacity: 0; transform: translateY(8px); } /* start hidden and slightly down */
+  to   { opacity: 1; transform: translateY(0); }   /* end visible and in place */
+}
+
+/* =========================
+   SCENE LAYOUT (QUOTE + CHARACTER)
+   ========================= */
+
+.scene{
+  display: grid;                          /* grid layout */
+  grid-template-columns: 1.35fr .65fr;    /* quote is wider, character is smaller */
+  gap: 12px;                              /* spacing */
+  align-items: stretch;                   /* equal height */
+}
+
+/* Make it one column on smaller screens */
+@media (max-width: 800px){
+  .scene{ grid-template-columns: 1fr; }
+}
+
+/* =========================
+   CHARACTER CARD
+   ========================= */
+
+.charCard{
+  position: relative;              /* needed for absolute summon layers */
+  border-radius: 14px;             /* rounded */
+  overflow: hidden;                /* hide burst/smoke edges */
+  border: 1px solid var(--softBorder); /* border */
+  background: var(--soft);         /* soft background */
+  padding: 12px;                   /* padding */
+  box-shadow: var(--shadow);       /* premium shadow */
+}
+
+/* Glow layer behind character for premium effect */
+.charGlow{
+  position:absolute;               /* fill card */
+  inset: -40%;                     /* extend outside to make smooth glow */
+  background:
+    radial-gradient(circle at 30% 30%, rgba(59,130,246,.35), transparent 60%),
+    radial-gradient(circle at 70% 70%, rgba(168,85,247,.30), transparent 60%);
+  filter: blur(18px);              /* blur for glow */
+  opacity: .9;                     /* visible but soft */
+  pointer-events: none;            /* doesn't block clicks */
+}
+
+/* Character image styling */
+.charImg{
+  position: relative;        /* keep above glow and summon layers */
+  width: 100%;               /* full width */
+  height: 190px;             /* fixed height */
+  object-fit: contain;       /* keep full image inside */
+  transform: translateZ(0);  /* smoother animation rendering */
+
+  /* Two animations:
+     1) charPop = entry animation
+     2) floaty  = slow floating effect after entry */
+  animation: charPop .55s ease-out both, floaty 2.6s ease-in-out .55s infinite;
+}
+
+/* Character name & vibe container */
+.charMeta{
+  position: relative;     /* keep above glow/smoke */
+  margin-top: 10px;       /* spacing */
+}
+.charName{
+  font-weight: 900;       /* strong bold */
+  letter-spacing: .2px;   /* premium spacing */
+}
+.charVibe{
+  margin-top: 4px;        /* spacing */
+  color: var(--muted);    /* muted look */
+  font-size: 12px;        /* small text */
+}
+
+/* =========================
+   SUMMON EFFECT (BURST + SMOKE)
+   ========================= */
+
+/* Main burst container (contains ring + rays via ::before and ::after) */
+.summonBurst{
+  position: absolute;     /* placed inside charCard */
+  inset: -40%;            /* extend outside for smooth burst */
+  pointer-events: none;   /* should not block clicks */
+  opacity: 0;             /* starts hidden */
+  animation: burstIn .55s ease-out both; /* shows burst quickly */
+}
+
+/* ::before creates the expanding ring */
+.summonBurst::before{
+  content:"";                         /* required for pseudo element */
+  position:absolute;                  /* place it */
+  left: 50%;                          /* center horizontally */
+  top: 52%;                           /* slightly below center */
+  width: 120px;                       /* ring size */
+  height: 120px;                      /* ring size */
+  transform: translate(-50%,-50%) scale(.4); /* start small */
+  border-radius: 999px;               /* circle */
+  border: 2px solid rgba(255,255,255,.65); /* ring stroke */
+  box-shadow:
+    0 0 22px rgba(59,130,246,.55),    /* blue glow */
+    0 0 38px rgba(168,85,247,.45);    /* purple glow */
+  filter: blur(.2px);                 /* slightly soften edges */
+  animation: ringExpand .55s ease-out both; /* ring expands and fades */
+}
+
+/* ::after creates spinning rays using conic-gradient */
+.summonBurst::after{
+  content:"";                         /* required for pseudo element */
+  position:absolute;
+  left: 50%;
+  top: 52%;
+  width: 280px;                       /* rays size */
+  height: 280px;
+  transform: translate(-50%,-50%) scale(.7); /* start smaller */
+  border-radius: 999px;
+
+  /* conic-gradient creates radial rays around circle */
+  background:
+    conic-gradient(
+      from 0deg,
+      rgba(59,130,246,.0),
+      rgba(59,130,246,.55),
+      rgba(59,130,246,.0),
+      rgba(168,85,247,.55),
+      rgba(168,85,247,.0)
+    );
+
+  filter: blur(1px);                  /* soften rays */
+  mask: radial-gradient(circle, transparent 35%, black 55%, transparent 72%); /* keep rays as a ring */
+  opacity: .9;
+  animation: raysSpin .6s ease-out both; /* rotate and fade out */
+}
+
+/* Smoke layer container */
+.summonSmoke{
+  position: absolute;     /* inside charCard */
+  inset: 0;               /* cover card */
+  pointer-events: none;   /* no blocking */
+  opacity: 0;             /* start hidden */
+  animation: smokeIn .65s ease-out both; /* smoke appears then fades */
+}
+
+/* Create smoke puffs using radial gradients */
+.summonSmoke::before,
+.summonSmoke::after{
+  content:"";
+  position:absolute;
+  left: 50%;
+  top: 58%;
+  width: 320px;
+  height: 220px;
+  transform: translate(-50%,-50%);
+
+  /* multiple radial gradients = multiple smoke blobs */
+  background:
+    radial-gradient(circle at 30% 60%, rgba(255,255,255,.22), transparent 55%),
+    radial-gradient(circle at 55% 70%, rgba(255,255,255,.18), transparent 58%),
+    radial-gradient(circle at 75% 55%, rgba(255,255,255,.20), transparent 55%);
+
+  filter: blur(10px); /* blur makes it look like smoke */
+  opacity: .85;       /* smoke visibility */
+}
+
+/* Second smoke layer bigger and lighter to add depth */
+.summonSmoke::after{
+  width: 380px;
+  height: 260px;
+  top: 60%;
+  opacity: .55;
+  filter: blur(14px);
+}
+
+/* =========================
+   KEYFRAMES (ANIMATIONS)
+   ========================= */
+
+/* Burst container fades in */
+@keyframes burstIn{
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Ring expands and disappears */
+@keyframes ringExpand{
+  0%   { opacity: 0; transform: translate(-50%,-50%) scale(.35); }
+  40%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%,-50%) scale(2.3); }
+}
+
+/* Rays rotate and fade out */
+@keyframes raysSpin{
+  0%   { opacity: 0; transform: translate(-50%,-50%) scale(.65) rotate(-20deg); }
+  30%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%,-50%) scale(1.2) rotate(55deg); }
+}
+
+/* Smoke rises up and fades */
+@keyframes smokeIn{
+  0%   { opacity: 0; transform: translateY(8px); }
+  30%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-14px); }
+}
+
+/* Character appears with a pop effect */
+@keyframes charPop{
+  0%   { opacity: 0; transform: translateY(10px) scale(.92); filter: blur(1px); }
+  60%  { opacity: 1; transform: translateY(0px) scale(1.02); filter: blur(0px); }
+  100% { opacity: 1; transform: translateY(0px) scale(1); }
+}
+
+/* Floating idle animation after summon */
+@keyframes floaty{
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
+
+/* =========================
+   MOBILE RESPONSIVE
+   ========================= */
+
+@media (max-width: 520px){
+  h1{ font-size: 22px; }        /* smaller heading on mobile */
+  .quoteText{ font-size: 18px; }/* smaller quote text on mobile */
+}

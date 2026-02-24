@@ -276,7 +276,11 @@ export default function App() {
                 <div className="charGlow" />
 
                 {/* Character image */}
-                <img className="charImg" src={character.img} alt={character.name} />
+                <img
+                     className="charImg"
+                     src={`${import.meta.env.BASE_URL}${character.img.replace(/^\//, "")}`}
+                     alt={character.name}
+                />
 
                 {/* Character name + vibe */}
                 <div className="charMeta">

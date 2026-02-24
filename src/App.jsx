@@ -14,11 +14,11 @@ const THEME_KEY = "theme_v1";      // stores theme (light/dark)
 // ✅ List of anime characters we will randomly show with each new quote
 // img path is from /public/characters folder
 const CHARACTERS = [
-  { name: "Goku", img: "/characters/Goku.jpg", vibe: "Never Give Up" },          // character name + image + small vibe line
-  { name: "Jinwoo", img: "/characters/Jinwoo.jpg", vibe: "Level Up Mindset" },
-  { name: "Saitama", img: "/characters/Saitama.jpg", vibe: "Calm Power" },
-  { name: "Gojo", img: "/characters/Satorugojo.jpg", vibe: "Limitless Focus" },
-  { name: "Tanjiro", img: "/characters/Tanjiro.png", vibe: "Kind but Unbreakable" },
+  { name: "Goku", img: "/characters/goku.jpg", vibe: "Never Give Up" },          // character name + image + small vibe line
+  { name: "Jinwoo", img: "/characters/jinwoo.jpg", vibe: "Level Up Mindset" },
+  { name: "Saitama", img: "/characters/saitama.jpg", vibe: "Calm Power" },
+  { name: "Gojo", img: "/characters/satorugojo.jpg", vibe: "Limitless Focus" },
+  { name: "Tanjiro", img: "/characters/tanjiro.png", vibe: "Kind but Unbreakable" },
 ];
 
 // ✅ Main component (React function component)

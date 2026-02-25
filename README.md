@@ -81,7 +81,9 @@ This ensures data remains intact even after page refresh.
 
 ## 📁 Project Structure
 
-daily-motivation-dashboard/
+```
+
+daily-motivation-dashboard/   
 ├── public/
 ├── src/
 │ ├── assets/
@@ -92,7 +94,8 @@ daily-motivation-dashboard/
 ├── vite.config.js
 └── README.md
 
----
+
+```
 
 ## 🎯 Learning Outcomes
 
